@@ -1,0 +1,79 @@
+<main class="trainer">
+  <header class="trainer__header">
+    <h1>Ear Trainer</h1>
+    <p class="trainer__subtitle">Listen to the sequence, then reveal the notes on the neck.</p>
+  </header>
+
+  <section class="controls" aria-label="Training settings">
+    <label class="control">
+      <span>Notes per round</span>
+      <select [(ngModel)]="noteCount">
+        @for (n of noteCountOptions; track n) {
+          <option [ngValue]="n">{{ n }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="control">
+      <span>Mode</span>
+      <select [(ngModel)]="mode">
+        <option value="key">In key</option>
+        <option value="random">Random (entire neck)</option>
+      </select>
+    </label>
+
+    <label class="control" [class.control--disabled]="mode === 'random'">
+      <span>Key</span>
+      <select [(ngModel)]="selectedKeyId" [disabled]="mode === 'random'">
+        @for (key of keyOptions; track key.id) {
+          <option [value]="key.id">{{ key.label }}</option>
+        }
+      </select>
+    </label>
+  </section>
+
+  <section class="actions" aria-label="Playback controls">
+    <button type="button" class="btn btn--primary" (click)="play()" [disabled]="isPlaying">
+      {{ isPlaying ? 'Playing…' : 'New round' }}
+    </button>
+    <button
+      type="button"
+      class="btn btn--secondary"
+      (click)="replay()"
+      [disabled]="!hasRound || isPlaying"
+    >
+      Replay
+    </button>
+    <button
+      type="button"
+      class="btn btn--secondary"
+      (click)="reveal()"
+      [disabled]="!hasRound || revealed"
+    >
+      Reveal on neck
+    </button>
+    @if (hasRound && !revealed) {
+      <p class="hint">Played {{ currentNotes.length }} note{{ currentNotes.length === 1 ? '' : 's' }}. Guess first, then reveal.</p>
+    }
+    @if (revealed && currentNotes.length) {
+      <div class="sequence" aria-live="polite">
+        <span class="sequence__title">Sequence</span>
+        <ol class="sequence__list">
+          @for (entry of sequenceEntries; track entry.orderIndex) {
+            <li
+              class="sequence__item"
+              [style.--seq-color]="sequenceColor(entry.colorIndex)"
+            >
+              <span class="sequence__order">{{ entry.orderIndex + 1 }}</span>
+              <strong>{{ entry.position.label }}</strong>
+            </li>
+          }
+        </ol>
+      </div>
+    }
+  </section>
+
+  <section class="neck-section" aria-label="Bass fretboard">
+    <app-bass-neck [sequenceEntries]="sequenceEntries" [reveal]="revealed" />
+  </section>
+</main>

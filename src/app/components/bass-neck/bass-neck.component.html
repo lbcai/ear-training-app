@@ -1,0 +1,47 @@
+<div class="neck-wrap">
+  <div class="neck" role="group" aria-label="Bass fretboard, standard tuning E A D G. Click a fret to hear the note.">
+    <div class="neck__labels-col" aria-hidden="true">
+      <span class="neck__corner"></span>
+      @for (row of stringRows; track row.index) {
+        <span class="string-label">{{ row.label }}</span>
+      }
+    </div>
+
+    <div class="neck__board">
+      <div class="fret-numbers">
+        @for (fret of frets; track fret) {
+          <span class="fret-number">{{ fret }}</span>
+        }
+      </div>
+
+      <div class="fret-grid">
+        @for (fret of frets; track fret) {
+          <div class="fret-column" [class.fret-marker]="isFretMarker(fret)">
+            @for (row of stringRows; track row.index) {
+              <button
+                type="button"
+                class="fret-cell"
+                [class.lit]="markersAt(row.index, fret).length > 0"
+                [attr.aria-label]="cellAriaLabel(row.index, fret)"
+                (click)="playCell(row.index, fret)"
+              >
+                @for (marker of markersAt(row.index, fret); track marker.position.stringIndex + '-' + marker.position.fret) {
+                  <span
+                    class="note-marker"
+                    [class.note-marker--played]="marker.isPlayed"
+                    [class.note-marker--alias]="!marker.isPlayed"
+                    [style.--seq-color]="sequenceColor(marker.colorIndex)"
+                  >
+                    <span class="note-order">{{ marker.playOrders.join(',') }}</span>
+                    <span class="note-label">{{ marker.position.label }}</span>
+                  </span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  <p class="tuning-caption">Standard tuning (low → high): E · A · D · G</p>
+</div>
