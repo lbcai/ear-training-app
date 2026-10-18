@@ -60,6 +60,10 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "github-pages": {
+              "baseHref": "/ear-training-app/",
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
