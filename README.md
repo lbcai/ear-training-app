@@ -36,6 +36,26 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+### GitHub Pages
+
+The site is published at `https://lbcai.github.io/ear-training-app/` (repo name must match the `base-href`).
+
+Build the same way CI does:
+
+```bash
+npm run build:pages
+```
+
+Output goes to `dist/ear-trainer-app/browser/`. Pushes to `master` or `main` run `.github/workflows/github-pages.yml`, which builds and deploys that folder via GitHub Actions. In the repo **Settings → Pages**, use **GitHub Actions** as the source (not a `/docs` or `/src` branch folder).
+
+Local smoke test after building:
+
+```bash
+npx serve dist/ear-trainer-app/browser -l 4200
+```
+
+Open `http://localhost:4200/ear-training-app/`.
+
 ## Running unit tests
 
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
