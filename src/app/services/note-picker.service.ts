@@ -9,7 +9,6 @@ import {
   scalePitchClasses,
 } from '../data/music-theory';
 import { FretPosition } from '../models/fret-position.model';
-import { randomInt, randomUnitInterval } from '../utils/random';
 
 export type PickMode = 'key' | 'key-chromatic' | 'random';
 
@@ -22,7 +21,7 @@ export class NotePickerService {
     const notes: FretPosition[] = [];
     for (let i = 0; i < count; i++) {
       const pool = this.poolForNextNote(mode, key);
-      const index = randomInt(pool.length);
+      const index = Math.floor(Math.random() * pool.length);
       notes.push(this.withLabel(pool[index], mode, key));
     }
     return notes;
@@ -43,7 +42,7 @@ export class NotePickerService {
     }
 
     const chromatic = this.chromaticPool(key);
-    const useChromatic = randomUnitInterval() < CHROMATIC_NOTE_CHANCE && chromatic.length > 0;
+    const useChromatic = Math.random() < CHROMATIC_NOTE_CHANCE && chromatic.length > 0;
     return useChromatic ? chromatic : diatonic;
   }
 
