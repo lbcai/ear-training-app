@@ -5,16 +5,31 @@
 
 .neck-wrap {
   width: 100%;
+  position: relative;
 }
 
 .neck {
   display: flex;
   align-items: stretch;
+  min-width: 0;
+  margin: 0;
   background: linear-gradient(180deg, #3d2914 0%, #2a1c0e 100%);
   border-radius: 12px;
   padding: 0.75rem;
   border: 2px solid #1a1208;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.neck__legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .neck__labels-col {
@@ -125,9 +140,10 @@
   --seq-color: #fff;
   display: inline-flex;
   align-items: center;
-  gap: 0.1rem;
+  gap: 0.12rem;
   max-width: 100%;
-  font-size: clamp(0.45rem, 1.4vw, 0.55rem);
+  overflow: visible;
+  font-size: clamp(0.5rem, 1.55vw, 0.62rem);
   font-weight: 700;
   line-height: 1;
   color: #1c1917;
@@ -157,6 +173,9 @@
 
 .note-label {
   font-size: inherit;
+  overflow: visible;
+  white-space: nowrap;
+  line-height: 1.1;
 }
 
 .fret-marker::after {

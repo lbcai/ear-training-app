@@ -18,6 +18,7 @@
       <span>Mode</span>
       <select [(ngModel)]="mode">
         <option value="key">In key</option>
+        <option value="key-chromatic">In key + chromatic</option>
         <option value="random">Random (entire neck)</option>
       </select>
     </label>
@@ -26,11 +27,27 @@
       <span>Key</span>
       <select [(ngModel)]="selectedKeyId" [disabled]="mode === 'random'">
         @for (key of keyOptions; track key.id) {
-          <option [value]="key.id">{{ key.label }}</option>
+          <option [ngValue]="key.id">{{ key.label }}</option>
         }
       </select>
     </label>
   </section>
+
+  @if (mode === 'key' || mode === 'key-chromatic') {
+    <section class="key-scale" aria-label="Notes in the selected key">
+      <h2 class="key-scale__title">{{ selectedKey.label }}</h2>
+      <p class="key-scale__notes">
+        @for (note of scaleNotes; track note; let last = $last) {
+          <span class="key-scale__note">{{ displayNoteLabel(note) }}</span>@if (!last) {<span class="key-scale__sep"> · </span>}
+        }
+      </p>
+      @if (mode === 'key-chromatic') {
+        <p class="key-scale__hint">
+          Most notes stay in this scale; about one in four may be a half-step outside it (e.g. C♯ in C major).
+        </p>
+      }
+    </section>
+  }
 
   <section class="actions" aria-label="Playback controls">
     <button type="button" class="btn btn--primary" (click)="play()" [disabled]="isPlaying">
@@ -65,7 +82,7 @@
               [style.--seq-color]="sequenceColor(entry.colorIndex)"
             >
               <span class="sequence__order">{{ entry.orderIndex + 1 }}</span>
-              <strong>{{ entry.position.label }}</strong>
+              <strong>{{ displayNoteLabel(noteLabel(entry.position)) }}</strong>
             </li>
           }
         </ol>
@@ -74,6 +91,11 @@
   </section>
 
   <section class="neck-section" aria-label="Bass fretboard">
-    <app-bass-neck [sequenceEntries]="sequenceEntries" [reveal]="revealed" />
+    <app-bass-neck
+      [sequenceEntries]="sequenceEntries"
+      [reveal]="revealed"
+      [activeKey]="roundKey"
+      [pickMode]="roundMode"
+    />
   </section>
 </main>

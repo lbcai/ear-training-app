@@ -60,6 +60,45 @@
   cursor: not-allowed;
 }
 
+.key-scale {
+  margin: -0.5rem 0 1.5rem;
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 10px;
+}
+
+.key-scale__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1c1917;
+}
+
+.key-scale__notes {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #292524;
+}
+
+.key-scale__note {
+  white-space: nowrap;
+}
+
+.key-scale__sep {
+  color: #a8a29e;
+  font-weight: 500;
+}
+
+.key-scale__hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.85rem;
+  color: #57534e;
+  line-height: 1.45;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

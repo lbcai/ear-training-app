@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { fretPositionAt } from '../../data/fretboard';
 import { sequenceColor } from '../../data/rainbow-colors';
-import { BASS_STRING_LABELS, FRET_COUNT } from '../../data/music-theory';
+import { BASS_STRING_LABELS, fretNoteLabel, FRET_COUNT, KeyOption } from '../../data/music-theory';
 import { SequenceEntry } from '../../models/sequence-entry.model';
 import { AudioService } from '../../services/audio.service';
+import { PickMode } from '../../services/note-picker.service';
+import { displayNoteLabel } from '../../utils/note-display';
 import { buildNeckMarkers, NeckMarker } from '../../utils/sequence-presentation';
 
 /** Display order: G (high) → E (low), matching standard neck diagrams. */
@@ -26,9 +28,12 @@ export class BassNeckComponent {
   readonly stringRows = STRING_ROWS;
   readonly frets = Array.from({ length: FRET_COUNT }, (_, i) => i);
   readonly sequenceColor = sequenceColor;
+  readonly displayNoteLabel = displayNoteLabel;
 
   @Input() sequenceEntries: SequenceEntry[] = [];
   @Input() reveal = false;
+  @Input() activeKey: KeyOption | null = null;
+  @Input() pickMode: PickMode = 'key';
 
   constructor(private readonly audio: AudioService) {}
 
@@ -47,11 +52,11 @@ export class BassNeckComponent {
   }
 
   private get neckMarkers(): NeckMarker[] {
-    return buildNeckMarkers(this.sequenceEntries);
+    return buildNeckMarkers(this.sequenceEntries, this.activeKey, this.pickMode);
   }
 
   cellAriaLabel(stringIndex: number, fret: number): string {
-    const { label } = fretPositionAt(stringIndex, fret);
+    const label = fretNoteLabel(stringIndex, fret, this.activeKey, this.pickMode);
     const stringName = BASS_STRING_LABELS[stringIndex];
     return `Play ${label} on ${stringName} string, fret ${fret}`;
   }

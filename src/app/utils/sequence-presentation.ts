@@ -1,7 +1,8 @@
 import { fretPositionsForMidi } from '../data/fretboard';
-import { midiForFret } from '../data/music-theory';
+import { fretNoteLabel, KeyOption, midiForFret } from '../data/music-theory';
 import { FretPosition } from '../models/fret-position.model';
 import { SequenceEntry } from '../models/sequence-entry.model';
+import { PickMode } from '../services/note-picker.service';
 
 export function fretPositionKey(position: FretPosition): string {
   return `${position.stringIndex}:${position.fret}`;
@@ -34,10 +35,15 @@ export interface NeckMarker {
   playOrders: number[];
   /** Fret that was actually played in the sequence (vs same-pitch alias). */
   isPlayed: boolean;
+  label: string;
 }
 
 /** All neck locations for each sequence pitch, plus which fret was played. */
-export function buildNeckMarkers(entries: SequenceEntry[]): NeckMarker[] {
+export function buildNeckMarkers(
+  entries: SequenceEntry[],
+  key: KeyOption | null,
+  mode: PickMode,
+): NeckMarker[] {
   const byMidi = new Map<
     number,
     { colorIndex: number; playOrders: number[]; playedKeys: Set<string> }
@@ -58,11 +64,13 @@ export function buildNeckMarkers(entries: SequenceEntry[]): NeckMarker[] {
   for (const [midi, group] of byMidi) {
     const uniqueOrders = [...new Set(group.playOrders)].sort((a, b) => a - b);
     for (const position of fretPositionsForMidi(midi)) {
+      const label = fretNoteLabel(position.stringIndex, position.fret, key, mode);
       markers.push({
-        position,
+        position: { ...position, label },
         colorIndex: group.colorIndex,
         playOrders: uniqueOrders,
         isPlayed: group.playedKeys.has(fretPositionKey(position)),
+        label,
       });
     }
   }

@@ -1,5 +1,8 @@
 <div class="neck-wrap">
-  <div class="neck" role="group" aria-label="Bass fretboard, standard tuning E A D G. Click a fret to hear the note.">
+  <fieldset class="neck">
+    <legend class="neck__legend">
+      Bass fretboard, standard tuning E A D G. Click a fret to hear the note.
+    </legend>
     <div class="neck__labels-col" aria-hidden="true">
       <span class="neck__corner"></span>
       @for (row of stringRows; track row.index) {
@@ -33,7 +36,7 @@
                     [style.--seq-color]="sequenceColor(marker.colorIndex)"
                   >
                     <span class="note-order">{{ marker.playOrders.join(',') }}</span>
-                    <span class="note-label">{{ marker.position.label }}</span>
+                    <span class="note-label">{{ displayNoteLabel(marker.label) }}</span>
                   </span>
                 }
               </button>
@@ -42,6 +45,6 @@
         }
       </div>
     </div>
-  </div>
+  </fieldset>
   <p class="tuning-caption">Standard tuning (low → high): E · A · D · G</p>
 </div>

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BassNeckComponent } from './components/bass-neck/bass-neck.component';
-import { buildKeyOptions, KeyOption } from './data/music-theory';
+import { buildKeyOptions, fretNoteLabel, KeyOption, scaleNoteNames } from './data/music-theory';
 import { sequenceColor } from './data/rainbow-colors';
 import { FretPosition } from './models/fret-position.model';
 import { buildSequenceEntries } from './utils/sequence-presentation';
+import { displayNoteLabel } from './utils/note-display';
 import { AudioService } from './services/audio.service';
 import { NotePickerService, PickMode } from './services/note-picker.service';
 
@@ -18,6 +19,7 @@ export class AppComponent {
   readonly noteCountOptions = Array.from({ length: 10 }, (_, i) => i + 1);
   readonly keyOptions = buildKeyOptions();
   readonly sequenceColor = sequenceColor;
+  readonly displayNoteLabel = displayNoteLabel;
 
   noteCount = 4;
   mode: PickMode = 'key';
@@ -26,6 +28,10 @@ export class AppComponent {
   currentNotes: FretPosition[] = [];
   revealed = false;
   isPlaying = false;
+
+  /** Key/mode used for the current round (for correct spellings on reveal). */
+  roundKey: KeyOption | null = null;
+  roundMode: PickMode = 'key';
 
   constructor(
     private readonly audio: AudioService,
@@ -40,16 +46,26 @@ export class AppComponent {
     return buildSequenceEntries(this.currentNotes);
   }
 
-  private selectedKey(): KeyOption {
+  get selectedKey(): KeyOption {
     return this.keyOptions.find((k) => k.id === this.selectedKeyId) ?? this.keyOptions[0];
+  }
+
+  get scaleNotes(): string[] {
+    return scaleNoteNames(this.selectedKey.root, this.selectedKey.quality);
+  }
+
+  noteLabel(position: FretPosition): string {
+    return fretNoteLabel(position.stringIndex, position.fret, this.roundKey, this.roundMode);
   }
 
   async play(): Promise<void> {
     this.revealed = false;
+    this.roundMode = this.mode;
+    this.roundKey = this.mode !== 'random' ? this.selectedKey : null;
     this.currentNotes = this.notePicker.pickNotes(
       this.noteCount,
       this.mode,
-      this.selectedKey(),
+      this.selectedKey,
     );
     await this.playCurrentSequence();
   }

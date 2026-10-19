@@ -32,7 +32,7 @@ describe('sequence presentation', () => {
   it('shows all same-octave locations on reveal', () => {
     const dOnA = fretPositionAt(1, 5);
     const entries = buildSequenceEntries([dOnA]);
-    const markers = buildNeckMarkers(entries);
+    const markers = buildNeckMarkers(entries, { id: 'A-major', root: 'A', quality: 'major', label: 'A Major' }, 'key');
 
     const onA5 = markers.find((m) => m.position.stringIndex === 1 && m.position.fret === 5)!;
     const onE10 = markers.find((m) => m.position.stringIndex === 0 && m.position.fret === 10)!;
@@ -47,11 +47,11 @@ describe('sequence presentation', () => {
   it('merges repeated played positions into one neck marker', () => {
     const a = pos(1, 5, 'D');
     const entries = buildSequenceEntries([a, pos(0, 3, 'G'), a]);
-    const markers = buildNeckMarkers(entries);
+    const markers = buildNeckMarkers(entries, { id: 'A-major', root: 'A', quality: 'major', label: 'A Major' }, 'key');
 
     const dMarkers = markers.filter((m) => m.colorIndex === 0);
     const playedD = dMarkers.filter((m) => m.isPlayed);
-    expect(playedD.length).toBe(1);
+    expect(playedD).toHaveSize(1);
     expect(playedD[0].playOrders).toEqual([1, 3]);
   });
 });
